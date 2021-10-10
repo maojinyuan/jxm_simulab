@@ -1,2 +1,5 @@
 /testsuite/
 */__pycache/
+*~
+*.swp
+*.swo
