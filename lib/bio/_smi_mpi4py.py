@@ -4,6 +4,10 @@ import numpy as np
 import pandas as pd
 from rdkit import Chem, DataStructs
 
+
+# #ip=$(hostname -i)
+# mpiexec -n 384 --mca btl_tcp_if_include ${ip}/24  --hostfile ~/.hostfile python example1.py
+
 def getSimilarity(_smi):
     try:
         mol = Chem.MolFromSmiles(_smi)
