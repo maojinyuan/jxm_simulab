@@ -7,8 +7,7 @@ import multiprocessing as mp
 class MPI_tackle(object):
     """ A class wrapper for multiprocessing calculations
     
-    This class should be inherited, then add deliverWork function.
-    And some preparatons for deliverwork can be wrapped into a preWork function.
+    This class should be inherited, then add some functions.
     
     Note1: The multiprocess package can not be used for distributed nodes.         
     """
