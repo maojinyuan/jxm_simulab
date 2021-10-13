@@ -6,6 +6,7 @@ import multiprocessing as mp
 
 class MPI_tackle(object):
     """ A class wrapper for multiprocessing calculations
+    
     This class should be inherited, then add deliverWork function.
     And some preparatons for deliverwork can be wrapped into a preWork function.
     
@@ -53,7 +54,12 @@ class GetSimilarity(MPI_tackle):
     def deliverWork(self, fn):
         targets = pd.read_csv(fn, header=None, sep=' ').values
         rr      = [_[0] + ',' + self.getSimilarity(_[1]) for _ in targets]
-        outname = os.path.splitext(fn)[0] + '.fsi'
+
+        if self.outpath == 'origin':
+            outname = os.path.normpath(os.path.splitext(fn)[0] + '.fsi')
+        else:
+            outname = os.path.normpath(self.outpath + os.path.basename(fn).split('.')[0] + '.fsi')
+
         np.savetxt(outname, rr, fmt='%s')
 
     def preWork(self, **kwargs):
@@ -103,7 +109,8 @@ class GetSmilesFromPdbqt(MPI_tackle):
 def ComputeSimilarity(): 
     data_path = '../input-files/'
     names = [data_path + _ for _ in os.listdir(data_path)] 
-    kwargs = {'B2AR':'B2AR-small-molecule.smi'}
+    outpath = 'origin'
+    kwargs = {'B2AR':'B2AR-small-molecule.smi', 'outpath':outpath}
 
     S = GetSimilarity(names, nps=int(sys.argv[1]))
     S.preWork(**kwargs)
@@ -115,7 +122,7 @@ def ComputeGetInfo():
     outpath = 'origin'
     kwargs = {'outpath': outpath}
 
-    S = GetSmilesFromPdbqt(names, nps=int(sys.argv[1]), chunksize_data=None)
+    S = GetSmilesFromPdbqt(names, nps=int(sys.argv[1]))
     S.preWork(**kwargs)
     S.start()
 
