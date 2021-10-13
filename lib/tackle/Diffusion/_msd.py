@@ -4,7 +4,7 @@ import numpy as np
 from numba import cuda, float32, jit, int32
 import math
 
-def autocorrFFT(X):
+def autocorrFFT(x):
 	M=X.shape[0]
 	Fx = np.fft.rfft(X.T[0], 2*M)
 	Fy = np.fft.rfft(X.T[1], 2*M)
@@ -14,7 +14,13 @@ def autocorrFFT(X):
 	res= (res[:M]).real
 	return res
 
-def msd_fft(X):
+def msd_fft(x):
+     """ FFT version: calculate msd
+    
+    :param x : np.ndarray, ndim = 2, trajectory of one particle in 3D.
+    :return  : np.ndarray
+    """
+    
 	M = X.shape[0]
 	D = np.square(X).sum(axis=1)
 	D = np.append(D, 0)
@@ -41,7 +47,7 @@ def msd_numpy(_a):
 def msd_cu(_a, _r2):
     """ Numba version: calculate msd
     
-    :param _a: np.ndarray, ndim = 3, trajectory with multi particles in 3-dimensions
+    :param _a: np.ndarray, ndim = 3, trajectory with multi particles in 3D.
     :return  : np.ndarray, ndim = 2 
     """
     row, col = cuda.grid(2)
