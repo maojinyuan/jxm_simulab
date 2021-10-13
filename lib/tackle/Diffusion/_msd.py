@@ -1,21 +1,26 @@
 #!/usr/bin/env python
 
-import gsd.hoomd
 import numpy as np
 from numba import cuda, float32, jit, int32
 import math
-import sys
-from pytool.cython import cfun
-from pytool import msd_fft
-import time
+
 
 def msd_numpy(_a):
-    """ Numpy version-calculate msd with multi cpu cores
+    """ Numpy version: calculate msd
+    
+    :param _a: np.ndarray, ndim = 3
+    :return  : np.ndarray
     """
+    
     return np.asarray([((_a[inv:] - _a[:-inv])**2).sum(axis=-1).mean() if inv != 0 else 0.0 for inv in range(_a.shape[0])], dtype=np.float32)
 
 @cuda.jit('void(float32[:, :, :], float32[:, :])')
 def cu_msd(_a, _r2):
+    """ Numba version: calculate msd
+    
+    :param _a: np.ndarray, ndim = 3, trajectory with multi particles in 3-dimensions
+    :return  : np.ndarray, ndim = 2 
+    """
     row, col = cuda.grid(2)
     if row >= _a.shape[0] or col >= _a.shape[1]:
         return
