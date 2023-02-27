@@ -107,7 +107,8 @@ def StaticStructureFactor(u, box, q_sparse=0.5, qmax=None, qbin=None):
     elif u.ndim == 2:
         p_cu = cp.asarray(u[i]).astype(np.float32)
         theta = cp.matmul(p_cu, qvec_cu)
-        expikr = ((np.cos(theta).sum(axis=0))**2 + (np.sin(theta).sum(axis=0))**2) / p_cu.shape[0]
+        expikr = ((np.cos(theta).sum(axis=0))**2 + \
+                  (np.sin(theta).sum(axis=0))**2) / p_cu.shape[0]
         for j in range(len(expikr)):
             sq[qvec_binidx[j]] += expikr[j]
             sq_count[qvec_binidx[j]] += 1
